@@ -1,0 +1,12 @@
+@use "fonts";
+@use "variables";
+@use "functions";
+@use "mixins";
+@use "base";
+@use "typography";
+@use "utilities";
+
+::selection {
+  background: rgba(189, 102, 117, 0.2);
+  color: #241b1d;
+}

@@ -1,0 +1,5 @@
+export const buildWhatsAppLink = (phone, message) => {
+  const normalizedPhone = phone.replace(/\D/g, "");
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${normalizedPhone}?text=${encodedMessage}`;
+};

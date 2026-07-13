@@ -1,0 +1,54 @@
+$color-white: #ffffff;
+$color-black: #000000;
+
+$color-background-primary: #fff7f8;
+$color-background-soft: #ead4d8;
+$color-surface: #fffafa;
+$color-border: #dec2c8;
+$color-text: #332327;
+$color-text-soft: #7b6268;
+$color-primary: #8f3f50;
+$color-primary-dark: #5d1f2d;
+$color-accent: #c7838f;
+$color-success: #2f7d42;
+
+$font-family-base: "Poppins", sans-serif;
+$font-family-headings: "Playfair Display", serif;
+
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.35rem;
+$font-size-h1: clamp(2.35rem, 8vw, 5.2rem);
+$font-size-h2: clamp(1.45rem, 3vw, 2.2rem);
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$space-2xs: 0.25rem;
+$space-xs: 0.5rem;
+$space-s: 0.75rem;
+$space-m: 1rem;
+$space-l: 1.25rem;
+$space-xl: 1.5rem;
+$space-2xl: 2rem;
+$space-3xl: 2.5rem;
+
+$breakpoint-sm: 36em;
+$breakpoint-md: 48em;
+$breakpoint-lg: 64em;
+
+$border-radius-sm: 0.375rem;
+$border-radius-md: 0.625rem;
+$border-radius-lg: 0.9rem;
+$border-radius-pill: 999px;
+
+$shadow-sm: 0 2px 8px rgba($color-black, 0.06);
+$shadow-md: 0 18px 48px rgba(93, 31, 45, 0.18);
+
+$transition-fast: 150ms;
+$transition-base: 220ms;
+$transition-easing: ease;

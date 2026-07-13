@@ -1,0 +1,10 @@
+@use "variables" as V;
+
+.u-container {
+  width: min(1180px, 92%);
+  margin-inline: auto;
+}
+
+.u-text-muted {
+  color: V.$color-text-soft;
+}

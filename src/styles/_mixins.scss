@@ -1,0 +1,35 @@
+@use "variables" as V;
+@use "sass:list";
+
+@mixin media-up($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin media-down($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin transition($properties: all, $duration: V.$transition-base) {
+  $compiled: ();
+
+  @each $prop in $properties {
+    $compiled: list.append(
+      $compiled,
+      #{$prop $duration V.$transition-easing},
+      comma
+    );
+  }
+
+  transition: $compiled;
+}
+
+@mixin soft-card {
+  border: 1px solid V.$color-border;
+  border-radius: V.$border-radius-lg;
+  background: V.$color-surface;
+  box-shadow: V.$shadow-sm;
+}
