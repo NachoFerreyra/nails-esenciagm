@@ -108,83 +108,89 @@
 // Modal de vista previa / Lightbox
 .gallery__modal {
   position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(18, 10, 14, 0.88);
-  backdrop-filter: blur(10px);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 9999999;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(1rem, 3vw, 2rem);
-  cursor: pointer; // Clic en el fondo cierra el modal
-  animation: modal-fade 220ms ease-out both;
+  padding: max(1.5rem, env(safe-area-inset-top, 1.5rem))
+    max(1rem, env(safe-area-inset-right, 1rem))
+    max(1.5rem, env(safe-area-inset-bottom, 1.5rem))
+    max(1rem, env(safe-area-inset-left, 1rem));
+  box-sizing: border-box;
+  cursor: pointer; // Clic en cualquier parte del fondo oscuro cierra el modal
+  overflow: hidden;
+  touch-action: none;
+  animation: modal-fade 200ms ease-out both;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .gallery__modal-close {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top, 1rem));
+  right: max(1rem, env(safe-area-inset-right, 1rem));
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(V.$color-white, 0.35);
-  background: rgba(V.$color-white, 0.18);
-  color: V.$color-white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  z-index: 10000000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  touch-action: manipulation;
   @include M.transition((background-color, transform, border-color));
 
   &:hover {
-    background: rgba(V.$color-white, 0.35);
-    border-color: V.$color-white;
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.7);
     transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.92);
   }
 }
 
-.gallery__modal-wrapper {
+.gallery__modal-container {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  max-width: min(92vw, 680px);
-  max-height: 88vh;
-  cursor: zoom-in;
-  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
-
-  &--zoomed {
-    cursor: zoom-out;
-    transform: scale(1.32);
-
-    @media (max-width: 36em) {
-      transform: scale(1.22);
-    }
-  }
+  justify-content: center;
+  max-width: min(90vw, 680px);
+  max-height: min(78vh, 78dvh);
+  cursor: default; // Clic en la foto no cierra por error
+  animation: modal-zoom-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .gallery__modal-image {
-  max-width: 100%;
-  max-height: 78vh;
-  object-fit: contain;
-  border-radius: V.$border-radius-lg;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(V.$color-white, 0.2);
   display: block;
-}
-
-.gallery__modal-hint {
-  margin-top: 0.75rem;
-  color: rgba(V.$color-white, 0.8);
-  font-size: V.$font-size-xs;
-  font-weight: V.$font-weight-medium;
-  letter-spacing: 0.04em;
-  pointer-events: none;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
-  background: rgba(0, 0, 0, 0.4);
-  padding: 0.3rem 0.75rem;
-  border-radius: V.$border-radius-pill;
+  max-width: 100%;
+  max-height: min(78vh, 78dvh);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: V.$border-radius-md;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 @keyframes gallery-fade {
@@ -209,15 +215,27 @@
   }
 }
 
+@keyframes modal-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gallery__grid,
-  .gallery__modal {
+  .gallery__modal,
+  .gallery__modal-container {
     animation: none;
   }
 
   .gallery__filter-btn,
   .gallery__item,
-  .gallery__modal-wrapper,
   .gallery__modal-close {
     transition: none;
     transform: none;
