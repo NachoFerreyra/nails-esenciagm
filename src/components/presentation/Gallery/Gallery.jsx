@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { studioCategories } from "@/data/studioInfo";
 import styles from "./Gallery.module.scss";
 
@@ -38,7 +39,6 @@ const Gallery = () => {
   // Inicialmente ninguna categoría seleccionada (no se muestra nada por defecto)
   const [activeCategory, setActiveCategory] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isZoomed, setIsZoomed] = useState(false);
 
   // Manejo de clic en categoría: si ya está activa, se deselecciona (toggle)
   const handleCategoryClick = (categoryId) => {
@@ -55,29 +55,35 @@ const Gallery = () => {
     return ALL_GALLERY_IMAGES.filter((img) => img.category === activeCategory);
   }, [activeCategory]);
 
-  // Manejo de tecla Escape y bloqueo de scroll de la página al abrir vista previa
+  // Manejo de tecla Escape y bloqueo completo de scroll de la página al abrir vista previa
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         setSelectedImage(null);
-        setIsZoomed(false);
       }
     };
 
     if (selectedImage) {
       window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    }
+      const prevBodyOverflow = document.body.style.overflow;
+      const prevBodyTouchAction = document.body.style.touchAction;
+      const prevHtmlOverflow = document.documentElement.style.overflow;
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+      document.documentElement.style.overflow = "hidden";
+
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = prevBodyOverflow;
+        document.body.style.touchAction = prevBodyTouchAction;
+        document.documentElement.style.overflow = prevHtmlOverflow;
+      };
+    }
   }, [selectedImage]);
 
   const handleCloseModal = () => {
     setSelectedImage(null);
-    setIsZoomed(false);
   };
 
   return (
@@ -122,7 +128,6 @@ const Gallery = () => {
                 className={styles["gallery__item"]}
                 onClick={() => {
                   setSelectedImage(image);
-                  setIsZoomed(false);
                 }}
                 tabIndex={0}
                 role="button"
@@ -131,7 +136,6 @@ const Gallery = () => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     setSelectedImage(image);
-                    setIsZoomed(false);
                   }
                 }}
               >
@@ -147,57 +151,51 @@ const Gallery = () => {
         </div>
       )}
 
-      {/* Modal de vista previa / lightbox */}
-      {selectedImage && (
-        <div
-          className={styles["gallery__modal"]}
-          onClick={handleCloseModal}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Vista previa ampliada de imagen"
-        >
-          <button
-            type="button"
-            className={styles["gallery__modal-close"]}
-            onClick={handleCloseModal}
-            aria-label="Cerrar vista previa"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-
+      {/* Modal de vista previa / lightbox montado directamente en document.body */}
+      {selectedImage &&
+        createPortal(
           <div
-            className={`${styles["gallery__modal-wrapper"]} ${
-              isZoomed ? styles["gallery__modal-wrapper--zoomed"] : ""
-            }`}
-            onClick={(e) => {
-              // Clic en la imagen alterna zoom sin cerrar el modal
-              e.stopPropagation();
-              setIsZoomed((prev) => !prev);
-            }}
+            className={styles["gallery__modal"]}
+            onClick={handleCloseModal}
+            onTouchMove={(e) => e.preventDefault()}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Vista previa ampliada de imagen"
           >
-            <img
-              src={selectedImage.src}
-              alt="Vista previa completa de diseño de uñas"
-              className={styles["gallery__modal-image"]}
-            />
-            <span className={styles["gallery__modal-hint"]}>
-              {isZoomed ? "Clic para alejar" : "Clic para zoom • Clic afuera para salir"}
-            </span>
-          </div>
-        </div>
-      )}
+            <button
+              type="button"
+              className={styles["gallery__modal-close"]}
+              onClick={handleCloseModal}
+              aria-label="Cerrar vista previa"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            <div
+              className={styles["gallery__modal-container"]}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage.src}
+                alt="Vista previa completa de diseño de uñas"
+                className={styles["gallery__modal-image"]}
+              />
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 };
