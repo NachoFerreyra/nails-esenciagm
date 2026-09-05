@@ -3,9 +3,9 @@
 
 .card {
   width: min(980px, 100%);
+  margin: 0 auto;
   display: grid;
   gap: V.$space-2xl;
-  align-items: center;
   padding: clamp(1rem, 3vw, 2rem);
   border: 1px solid rgba(V.$color-primary-dark, 0.16);
   border-radius: clamp(1.1rem, 3vw, 2rem);
@@ -15,19 +15,54 @@
   animation: card-enter 520ms V.$transition-easing both;
 
   @include M.media-up(V.$breakpoint-lg) {
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.52fr);
     gap: V.$space-xl;
-    padding: 1.5rem 2rem;
-    max-height: calc(100dvh - 4rem);
+    padding: 2rem 2.5rem;
   }
 }
 
 .card__content {
   display: grid;
   gap: V.$space-xl;
+}
 
-  @include M.media-up(V.$breakpoint-lg) {
-    gap: V.$space-s;
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: V.$space-xl;
+
+  @include M.media-down(V.$breakpoint-sm) {
+    align-items: center;
+    gap: V.$space-m;
+  }
+}
+
+.card__header-info {
+  display: grid;
+  gap: V.$space-xs;
+  flex: 1;
+  min-width: 0;
+}
+
+.card__logo {
+  width: clamp(96px, 14vw, 148px);
+  height: clamp(96px, 14vw, 148px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(V.$color-primary, 0.3);
+  box-shadow: 0 10px 30px rgba(V.$color-primary-dark, 0.16);
+  flex-shrink: 0;
+  background: V.$color-white;
+  @include M.transition((transform, box-shadow));
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 14px 38px rgba(V.$color-primary-dark, 0.22);
+  }
+
+  @include M.media-down(V.$breakpoint-sm) {
+    width: clamp(88px, 24vw, 108px);
+    height: clamp(88px, 24vw, 108px);
   }
 }
 
@@ -65,41 +100,36 @@
   font-size: V.$font-size-lg;
 }
 
-.card__services {
-  display: flex;
-  flex-wrap: wrap;
-  gap: V.$space-s;
-}
-
-.card__services li {
-  border: 1px solid rgba(V.$color-primary, 0.2);
-  border-radius: V.$border-radius-pill;
-  padding: 0.42rem 0.78rem;
-  background: rgba(V.$color-white, 0.82);
-  color: V.$color-primary-dark;
-  font-size: V.$font-size-sm;
-  font-weight: V.$font-weight-semibold;
-}
-
-// Grid de detalles: Horarios y Dirección lado a lado
-// align-items: start para que cada card tenga su altura natural
+// Grid de detalles y botones de contacto
 .card__details {
   display: grid;
   gap: V.$space-m;
   margin: 0;
-  align-items: start;
+
+  // Mobile: Horarios -> Mapa -> Botones
+  grid-template-areas:
+    "hours"
+    "map"
+    "actions";
 
   @include M.media-up(V.$breakpoint-sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "hours   map"
+      "actions map";
+    gap: V.$space-m;
   }
 }
 
-.card__details div {
+.card__hours {
+  grid-area: hours;
   @include M.soft-card;
   padding: V.$space-m;
 }
 
-.card__details dt {
+.card__detail-label {
+  display: block;
   color: V.$color-primary-dark;
   font-size: V.$font-size-xs;
   font-weight: V.$font-weight-bold;
@@ -107,27 +137,21 @@
   letter-spacing: 0.08em;
 }
 
-.card__details dd {
+.card__detail-value {
   margin: V.$space-xs 0 0;
   color: V.$color-text-soft;
 }
 
 // Bloque de dirección con mapa embebido
 .card__details-map {
+  grid-area: map;
   @include M.soft-card;
   padding: V.$space-m;
+  display: flex;
+  flex-direction: column;
 
-  dt {
-    color: V.$color-primary-dark;
-    font-size: V.$font-size-xs;
-    font-weight: V.$font-weight-bold;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  dd {
-    margin: V.$space-xs 0 V.$space-s;
-    color: V.$color-text-soft;
+  .card__detail-value {
+    margin-bottom: V.$space-s;
   }
 }
 
@@ -138,52 +162,64 @@
   border: 0;
   border-radius: V.$border-radius-md;
   overflow: hidden;
+  margin-top: auto;
 }
 
 .card__actions {
+  grid-area: actions;
   display: grid;
-  gap: V.$space-s;
+  gap: V.$space-xs;
+  grid-template-columns: 1fr;
 
   @include M.media-up(V.$breakpoint-sm) {
-    grid-template-columns: 1.35fr 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
   }
 }
 
 .card__button {
   display: inline-flex;
-  min-height: 46px;
+  min-height: 42px;
+  height: 100%;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   border: 1px solid rgba(V.$color-primary, 0.25);
   border-radius: V.$border-radius-pill;
-  padding: 0.7rem 1rem;
+  padding: 0.5rem 1rem;
   background: V.$color-white;
   color: V.$color-primary-dark;
+  font-size: V.$font-size-sm;
   font-weight: V.$font-weight-bold;
   text-align: center;
   box-shadow: V.$shadow-sm;
   @include M.transition((transform, border-color, background-color, color, box-shadow));
 
-  @include M.media-up(V.$breakpoint-lg) {
-    min-height: 38px;
-    padding: 0.45rem 0.85rem;
-    font-size: V.$font-size-sm;
+  svg {
+    flex-shrink: 0;
+    transition: transform V.$transition-fast V.$transition-easing;
   }
-}
 
-.card__button:hover {
-  transform: translateY(-2px);
-  border-color: rgba(V.$color-primary, 0.44);
-  box-shadow: 0 12px 26px rgba(V.$color-primary-dark, 0.12);
-}
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(V.$color-primary, 0.44);
+    box-shadow: 0 10px 24px rgba(V.$color-primary-dark, 0.12);
 
-.card__button--primary {
-  background: V.$color-primary;
-  color: V.$color-white;
-}
+    svg {
+      transform: scale(1.1);
+    }
+  }
 
-.card__button--primary:hover {
-  background: V.$color-primary-dark;
+  &--primary {
+    background: V.$color-primary;
+    color: V.$color-white;
+    border-color: V.$color-primary;
+
+    &:hover {
+      background: V.$color-primary-dark;
+      border-color: V.$color-primary-dark;
+    }
+  }
 }
 
 .card__footer {
@@ -191,26 +227,6 @@
   padding-top: V.$space-m;
   color: V.$color-text-soft;
   font-size: V.$font-size-sm;
-}
-
-.card__media {
-  width: 100%;
-  justify-self: center;
-  overflow: hidden;
-  border-radius: clamp(0.9rem, 2vw, 1.6rem);
-  border: 1px solid rgba(V.$color-white, 0.84);
-  box-shadow: 0 20px 40px rgba(V.$color-primary-dark, 0.14);
-  aspect-ratio: 1 / 1.18;
-  background: #140f10;
-  position: relative;
-
-  @include M.media-up(V.$breakpoint-md) {
-    aspect-ratio: 1.32 / 1;
-  }
-
-  @include M.media-up(V.$breakpoint-lg) {
-    aspect-ratio: 1 / 1.06;
-  }
 }
 
 @keyframes card-enter {
