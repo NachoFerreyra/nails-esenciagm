@@ -108,6 +108,12 @@
 // Modal de vista previa / Lightbox
 .gallery__modal {
   position: fixed;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
   top: 0;
   left: 0;
   right: 0;
@@ -120,20 +126,28 @@
   background: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  display: flex;
+  &[open] {
+    display: flex;
+  }
   align-items: center;
   justify-content: center;
   padding: max(1.5rem, env(safe-area-inset-top, 1.5rem))
     max(1rem, env(safe-area-inset-right, 1rem))
     max(1.5rem, env(safe-area-inset-bottom, 1.5rem))
     max(1rem, env(safe-area-inset-left, 1rem));
-  box-sizing: border-box;
   cursor: pointer; // Clic en cualquier parte del fondo oscuro cierra el modal
   overflow: hidden;
   touch-action: none;
   animation: modal-fade 200ms ease-out both;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: contain;
+
+  &::backdrop {
+    background: transparent;
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
 }
 
 .gallery__modal-close {
